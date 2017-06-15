@@ -22,6 +22,7 @@
 #include "s2loop.h"
 #include "s2polygon.h"
 #include "vector2.h"
+#include "vector3.h" 
 %}
 
 // The PACKED macro makes SWIG think that we're declaring a variable of type
@@ -60,10 +61,6 @@ vector<S2CellId> *OUTPUT {
 %apply vector<S2CellId> *OUTPUT {vector<S2CellId> *covering};
 %apply vector<S2CellId> *OUTPUT {vector<S2CellId> *output};
 
-%include "std_vector.i"
-%template(S2PointVector) std::vector<S2Point>;
-%template(VectorDouble) std::vector<double>;
-
 template<class T1>
 struct Vector2 {
   T1 x();
@@ -71,18 +68,23 @@ struct Vector2 {
   int Size();
 };
 %template(Vector2_double) Vector2<double>;
-%template(Vector2_int) Vector2<int>;
+%template(Vector2_int) Vector2<int>; 
 
-template<class T1>
+template<class T2>
 struct Vector3 {
-  T1 x();
-  T1 y();
-  T1 z();
+  T2 x();
+  T2 y();
+  T2 z();
   int Size();
 };
 %template(Vector3_double) Vector3<double>;
-%template(Vector3_int) Vector3<int>;
 
+typedef Vector3<double> S2Point;
+
+%include "std_vector.i"
+%template(S2PointVector) std::vector<S2Point>;
+%template(VectorDouble) std::vector<double>;
+ 
 %typemap(in, numinputs=0)
 S2CellId *OUTPUT(S2CellId temp[4]) {
   $1 = temp;
@@ -111,7 +113,8 @@ S2CellId *OUTPUT {
 %include "s2cellunion.h"
 %include "s2loop.h"
 %include "s2polygon.h"
-%include "vector2.h"
+%include "vector2.h" 
+%include "vector3.h"
 
 %define USE_STREAM_INSERTOR_FOR_STR(type)
   %extend type {

@@ -371,8 +371,10 @@ Vector2_d S2CellId::GetCenterST() const {
 Vector2_d S2CellId::GetCenterUV() const {
   int si, ti;
   GetCenterSiTi(&si, &ti);
-  return Vector2_d(S2::STtoUV((0.5 / kMaxSize) * si),
+  Vector2_d result = Vector2_d(S2::STtoUV((0.5 / kMaxSize) * si),
                    S2::STtoUV((0.5 / kMaxSize) * ti));
+  return result;
+
 }
 
 S2CellId S2CellId::FromFaceIJWrap(int face, int i, int j) {

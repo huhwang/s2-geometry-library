@@ -6,7 +6,11 @@
 
 %{
 #include <sstream>
+#include <vector>
+#include <cstdlib>
+#include <algorithm>
 
+#include "s2.h"
 #include "s2cellid.h"
 #include "s2region.h"
 #include "s2cap.h"
@@ -17,6 +21,7 @@
 #include "s2cellunion.h"
 #include "s2loop.h"
 #include "s2polygon.h"
+#include "vector2.h"
 %}
 
 // The PACKED macro makes SWIG think that we're declaring a variable of type
@@ -57,7 +62,39 @@ vector<S2CellId> *OUTPUT {
 
 %include "std_vector.i"
 %template(S2PointVector) std::vector<S2Point>;
-//%template(S2LoopVector) std::vector<S2Loop>;
+%template(VectorDouble) std::vector<double>;
+
+template<class T1>
+struct Vector2 {
+  T1 x();
+  T1 y();
+  int Size();
+};
+%template(Vector2_double) Vector2<double>;
+%template(Vector2_int) Vector2<int>;
+
+template<class T1>
+struct Vector3 {
+  T1 x();
+  T1 y();
+  T1 z();
+  int Size();
+};
+%template(Vector3_double) Vector3<double>;
+%template(Vector3_int) Vector3<int>;
+
+%typemap(in, numinputs=0)
+S2CellId *OUTPUT(S2CellId temp[4]) {
+  $1 = temp;
+}
+
+%typemap(argout, fragment="t_output_helper") 
+S2CellId *OUTPUT {
+  vector<S2CellId> holder($1, $1 + 4);
+  $result = t_output_helper($result, vector_output_helper(&holder, &FromS2CellId));
+}
+
+%apply S2CellId *OUTPUT {S2CellId neighbors[4]}
 
 #endif
 
@@ -74,6 +111,7 @@ vector<S2CellId> *OUTPUT {
 %include "s2cellunion.h"
 %include "s2loop.h"
 %include "s2polygon.h"
+%include "vector2.h"
 
 %define USE_STREAM_INSERTOR_FOR_STR(type)
   %extend type {

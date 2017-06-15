@@ -288,14 +288,14 @@ class S2CellId {
     return uint64(1) << (2 * (kMaxLevel - level));
   }
 
+  // Return the i- or j-index of the leaf cell containing the given
+  // s- or t-value.  Values are clamped appropriately.
+  inline static int STtoIJ(double s);
+
  private:
   // This is the offset required to wrap around from the beginning of the
   // Hilbert curve to the end or vice versa; see next_wrap() and prev_wrap().
   static uint64 const kWrapOffset = uint64(kNumFaces) << kPosBits;
-
-  // Return the i- or j-index of the leaf cell containing the given
-  // s- or t-value.  Values are clamped appropriately.
-  inline static int STtoIJ(double s);
 
   // Return the (face, si, ti) coordinates of the center of the cell.  Note
   // that although (si,ti) coordinates span the range [0,2**31] in general,

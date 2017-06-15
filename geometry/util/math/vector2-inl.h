@@ -75,35 +75,35 @@ void Vector2<VType>::Set(const VType x, const VType y) {
 }
 
 template <typename VType>
-const Vector2<VType>& Vector2<VType>::operator=(const Self &vb) {
+const Vector2<VType> Vector2<VType>::operator=(const Self &vb) {
   c_[0] = vb.c_[0];
   c_[1] = vb.c_[1];
   return (*this);
 }
 
 template <typename VType>
-Vector2<VType>& Vector2<VType>::operator+=(const Self &vb) {
+Vector2<VType> Vector2<VType>::operator+=(const Self &vb) {
   c_[0] += vb.c_[0];
   c_[1] += vb.c_[1];
   return (*this);
 }
 
 template <typename VType>
-Vector2<VType>& Vector2<VType>::operator-=(const Self &vb) {
+Vector2<VType> Vector2<VType>::operator-=(const Self &vb) {
   c_[0] -= vb.c_[0];
   c_[1] -= vb.c_[1];
   return (*this);
 }
 
 template <typename VType>
-Vector2<VType>& Vector2<VType>::operator*=(const VType k) {
+Vector2<VType> Vector2<VType>::operator*=(const VType k) {
   c_[0] *= k;
   c_[1] *= k;
   return (*this);
 }
 
 template <typename VType>
-Vector2<VType>& Vector2<VType>::operator/=(const VType k) {
+Vector2<VType> Vector2<VType>::operator/=(const VType k) {
   c_[0] /= k;
   c_[1] /= k;
   return (*this);

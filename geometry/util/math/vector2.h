@@ -32,13 +32,12 @@ class Vector2 {
  private:
   VType c_[2];
 
+ public:
   // FloatType is the type returned by Norm() and Angle().  These methods are
   // special because they return floating-point values even when VType is an
   // integer.
-  typedef typename base::if_<base::is_integral<VType>::value,
-                             double, VType>::type FloatType;
+  typedef typename base::if_<base::is_integral<VType>::value, double, VType>::type FloatType;
 
- public:
   typedef Vector2<VType> Self;
   typedef VType BaseType;
   // Create a new vector (0,0)
@@ -58,15 +57,15 @@ class Vector2 {
   static int Size() { return 2; }
   // Modify the coordinates of the current vector
   void Set(const VType x, const VType y);
-  const Self& operator=(const Self &vb);
+  const Self operator=(const Self &vb);
   // Add two vectors, component by component
-  Self& operator+=(const Self &vb);
+  Self operator+=(const Self &vb);
   // Subtract two vectors, component by component
-  Self& operator-=(const Self &vb);
+  Self operator-=(const Self &vb);
   // Multiply a vector by a scalar
-  Self& operator*=(const VType k);
+  Self operator*=(const VType k);
   // Divide a vector by a scalar
-  Self& operator/=(const VType k);
+  Self operator/=(const VType k);
   // Multiply two vectors component by component
   Self MulComponents(const Self &vb) const;
   // Divide two vectors component by component

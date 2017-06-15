@@ -12,6 +12,7 @@ Find_Package(PythonLibs 2.7 REQUIRED)
 include(UseSWIG)
 
 include_directories(
+	../util/math
 	../s2
 	..
 	${PYTHON_INCLUDE_PATH}

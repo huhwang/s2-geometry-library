@@ -1,6 +1,6 @@
 # s2-geometry-library
 
-[![Build Status](https://travis-ci.org/micolous/s2-geometry-library.svg?branch=master)](https://travis-ci.org/micolous/s2-geometry-library)
+[![Build Status](https://travis-ci.org/huhwang/s2-geometry-library.svg?branch=master)](https://travis-ci.org/huhwang/s2-geometry-library)
 
 * License: Apache 2.0 (see `COPYING`)
 * Upstream: https://code.google.com/archive/p/s2-geometry-library/ (unmaintained)

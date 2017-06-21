@@ -290,7 +290,13 @@ class S2CellId {
 
   // Return the i- or j-index of the leaf cell containing the given
   // s- or t-value.  Values are clamped appropriately.
-  inline static int STtoIJ(double s);
+  inline static int STtoIJ(double s) {
+    // Converting from floating-point to integers via static_cast is very slow
+    // on Intel processors because it requires changing the rounding mode.
+    // Rounding to the nearest integer using FastIntRound() is much faster.
+
+    return max(0, min(kMaxSize - 1, MathUtil::FastIntRound(kMaxSize * s - 0.5)));
+  }
 
  private:
   // This is the offset required to wrap around from the beginning of the

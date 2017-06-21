@@ -193,15 +193,6 @@ S2CellId S2CellId::FromToken(string const& token) {
   return S2CellId(ParseLeadingHex64Value(digits, 0));
 }
 
-inline int S2CellId::STtoIJ(double s) {
-  // Converting from floating-point to integers via static_cast is very slow
-  // on Intel processors because it requires changing the rounding mode.
-  // Rounding to the nearest integer using FastIntRound() is much faster.
-
-  return max(0, min(kMaxSize - 1, MathUtil::FastIntRound(kMaxSize * s - 0.5)));
-}
-
-
 S2CellId S2CellId::FromFaceIJ(int face, int i, int j) {
   // Initialization if not done yet
   MaybeInit();

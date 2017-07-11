@@ -1,6 +1,8 @@
 // Copyright 2006 Google Inc. All Rights Reserved.
 // Author: Andrew Eland (andrewe@google.com)
 
+// Copyright 2017 Huan Wang (fredwanghuan@gmail.com)
+
 %module s2
 %include base.i
 
@@ -21,6 +23,7 @@
 #include "s2cellunion.h"
 #include "s2loop.h"
 #include "s2polygon.h"
+#include "s2polygonbuilder.h"
 #include "vector2.h"
 #include "vector3.h" 
 %}
@@ -113,6 +116,7 @@ S2CellId *OUTPUT {
 %include "s2cellunion.h"
 %include "s2loop.h"
 %include "s2polygon.h"
+%include "s2polygonbuilder.h"
 %include "vector2.h" 
 %include "vector3.h"
 

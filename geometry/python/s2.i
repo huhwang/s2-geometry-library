@@ -51,18 +51,26 @@
   }
 %}
 
-%typemap(in, numinputs=0)
-vector<S2CellId> *OUTPUT(vector<S2CellId> temp) {
-  $1 = &temp;
-}
+%inline %{
+  static PyObject *FromS2Polygon(const S2Polygon &poly) {
+    return SWIG_NewPointerObj(poly.Clone(), SWIGTYPE_p_S2Polygon, 1);
+  }
+%}
 
-%typemap(argout, fragment="t_output_helper")
-vector<S2CellId> *OUTPUT {
-  $result = t_output_helper($result, vector_output_helper($1, &FromS2CellId));
-}
+%inline %{
+  static PyObject *FromS2Point(const S2Point &point) {
+    return SWIG_NewPointerObj(new S2Point(point), SWIGTYPE_p_Vector3T_double_t, 1);
+  }
+%}
 
-%apply vector<S2CellId> *OUTPUT {vector<S2CellId> *covering};
-%apply vector<S2CellId> *OUTPUT {vector<S2CellId> *output};
+%inline %{
+  static PyObject *FromS2Edge(const pair<S2Point, S2Point> &edge) {
+    PyObject * pt1 = FromS2Point(edge.first);
+    PyObject * pt2 = FromS2Point(edge.second);
+    pair<PyObject* , PyObject*> *temp = new pair<PyObject* , PyObject*>(pt1, pt2);
+    return SWIG_NewPointerObj(temp, SWIGTYPE_p_pairT_PyObject_p_PyObject_p_t, 1);
+  }
+%}
 
 template<class T1>
 struct Vector2 {
@@ -73,33 +81,76 @@ struct Vector2 {
 %template(Vector2_double) Vector2<double>;
 %template(Vector2_int) Vector2<int>; 
 
-template<class T2>
+template<class T1>
 struct Vector3 {
-  T2 x();
-  T2 y();
-  T2 z();
+  T1 x();
+  T1 y();
+  T1 z();
   int Size();
 };
 %template(Vector3_double) Vector3<double>;
-
+%template(Vector3_int) Vector3<int>;
 typedef Vector3<double> S2Point;
 
-%include "std_vector.i"
-%template(S2PointVector) std::vector<S2Point>;
-%template(VectorDouble) std::vector<double>;
- 
-%typemap(in, numinputs=0)
-S2CellId *OUTPUT(S2CellId temp[4]) {
-  $1 = temp;
+template<class T1, class T2> struct pair {
+  typedef T1 first_type;
+  typedef T2 second_type;
+  T1 first;
+  T2 second;
+  pair();
+  pair(const T1&, const T2&);
+  ~pair();
+};
+%template(pair_pt_pt) pair<S2Point, S2Point>;
+%template(pair_py_py) pair<PyObject*, PyObject*>;
+typedef pair<S2Point, S2Point> S2Edge;
+typedef vector<pair<S2Point, S2Point>> EdgeList;
+
+
+// For s2polygonbuilder::AssemblePolygon
+%typemap(in, numinputs=0) S2Polygon *OUTPUT(S2Polygon temp) { $1 = &temp; }
+
+%typemap(argout) S2Polygon *OUTPUT {
+  $result = t_output_helper($result, FromS2Polygon(*$1));
 }
 
-%typemap(argout, fragment="t_output_helper") 
-S2CellId *OUTPUT {
-  vector<S2CellId> holder($1, $1 + 4);
+%apply S2Polygon *OUTPUT {S2Polygon* polygon};
+
+%typemap(in, numinputs=0) EdgeList *OUTPUT(vector<pair<S2Point, S2Point>> temp) { $1 = &temp; }
+
+%typemap(argout) EdgeList *OUTPUT {
+  $result = t_output_helper($result, vector_output_helper($1, &FromS2Edge));
+}
+
+%apply EdgeList *OUTPUT {vector<pair<S2Point, S2Point>> *unused_edges};
+
+
+// For S2RegionCoverer::GetCovering
+%typemap(in, numinputs=0) vector<S2CellId> *OUTPUT(vector<S2CellId> temp) { $1 = &temp; }
+
+%typemap(argout, fragment="t_output_helper") vector<S2CellId> *OUTPUT {
+  $result = t_output_helper($result, vector_output_helper($1, &FromS2CellId));
+}
+
+%apply vector<S2CellId> *OUTPUT {vector<S2CellId> *covering};
+%apply vector<S2CellId> *OUTPUT {vector<S2CellId> *output};
+
+
+// For s2cellid::GetEdgeNeighbors
+%typemap(in, numinputs=0) S2CellId *OUTPUT(S2CellId temp[4]) { $1 = temp; }
+
+%typemap(argout) S2CellId *OUTPUT {
+  vector<S2CellId> holder($1, $1 + 4);  // init vector using c array ($1)
   $result = t_output_helper($result, vector_output_helper(&holder, &FromS2CellId));
 }
 
-%apply S2CellId *OUTPUT {S2CellId neighbors[4]}
+%apply S2CellId *OUTPUT {S2CellId neighbors[4]};
+
+
+%include "std_vector.i"
+// %template(S2PointVector) std::vector<S2Point>;
+// %template(VectorDouble) std::vector<double>;
+// %template(VectorEdge) std::vector<std::pair<S2Point, S2Point>>;
 
 #endif
 

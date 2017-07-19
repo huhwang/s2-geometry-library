@@ -104,8 +104,7 @@ template<class T1, class T2> struct pair {
 %template(pair_pt_pt) pair<S2Point, S2Point>;
 %template(pair_py_py) pair<PyObject*, PyObject*>;
 typedef pair<S2Point, S2Point> S2Edge;
-typedef vector<pair<S2Point, S2Point>> EdgeList;
-
+typedef vector<pair<S2Point, S2Point> > EdgeList;
 
 // For s2polygonbuilder::AssemblePolygon
 %typemap(in, numinputs=0) S2Polygon *OUTPUT(S2Polygon temp) { $1 = &temp; }
